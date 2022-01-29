@@ -36,7 +36,7 @@ end
 
 % setup maximum number of iterations
 if nargin < 5
-    nMaxIter = 100;
+    nMaxIter = 1000;
 end
 
 % setup default fail criteria
@@ -53,14 +53,19 @@ fOld = 2*f;
 
 % 2nd Order Zero Crossing condition
 del = fx^2 - 2 * f * fxx;
-    
+
 % Compute step size required to reach 0
-if del >= 0
-    xStep = -fx/fxx + sign( -f*fx*fxx) * sqrt(del)/fxx;
+if fxx ~= 0
+    if del >= 0
+        xStep = -fx/fxx + sign( -f*fx*fxx) * sqrt(del)/fxx;
+    else
+        xStep = -f/fx * ( 1 + 0.5*f/fx^2*fxx );
+    end
 else
-    xStep = -f/fx * ( 1 + 0.5*f/fx^2*fxx );
-end
     
+    xStep = -f/fx;
+end
+
 % Error Status
 errStatus = 0;
 
@@ -72,7 +77,8 @@ elseif xStep < 0
     xMin = -Inf;
     xMax = x;
 else
-    error('Derivative is zero at this point. This is a local minimum.');
+    %     error('Derivative is zero at this point. This is a local minimum.');
+    % 2;
 end
 
 % Number of iterations
@@ -90,25 +96,29 @@ while abs(f/fOld-1) > relativeTol ...
         && errStatus == 0 ...
         && nIter < nMaxIter ...
         && failCriteria(x) == false
-   
+    
     % TODO if is evaluated at the end of previous iter, and start of this
     % iter. Can be optimized by inputting the value along with the function.
     % Compute the function and its 1st and 2nd derivatives
     [f, fx, fxx] = Compute_f_fx_fxx(fun, x, dx);
-
+    
     % 2nd Order Zero Crossing condition
     del = fx^2 - 2 * f * fxx;
-
+    
     % Compute step size required to reach 0
     if del >= 0
         % Evaluate both possible roots and choose the closest one
         delSqrt = sqrt(del);
         dx1 = -fx - delSqrt;
         dx2 = -fx + delSqrt;
-        if abs(dx1) < abs(dx2)
-            xStep = dx1/fxx;
+        if fxx ~= 0
+            if abs(dx1) < abs(dx2)
+                xStep = dx1/fxx;
+            else
+                xStep = dx2/fxx;
+            end
         else
-            xStep = dx2/fxx;
+            xStep = -f/fx;
         end
     else
         xStep = -f/fx * ( 1 + 0.5*f/fx^2*fxx );
@@ -118,7 +128,7 @@ while abs(f/fOld-1) > relativeTol ...
         delXList = ( -100:100 ) * xStep/10;
         xList = x + delXList;
         
-%         ax^2 + bx + c
+        %         ax^2 + bx + c
         a = fxx/2;
         b = fx;
         c = f;
@@ -141,17 +151,17 @@ while abs(f/fOld-1) > relativeTol ...
     elseif xStep < 0
         xMax = x;
     else
-%         error('Step is zero.') % as abs(f) > tol, f/fx^2*fxx == -2 must be true.
+        %         error('Step is zero.') % as abs(f) > tol, f/fx^2*fxx == -2 must be true.
         % TO DO: assign further meaning to this error
-%         errStatus = 4;
+        %         errStatus = 4;
     end
-
+    
     % Take underrelaxed step
     x = x + xStep * scale;
-
+    
     % Store previous residual
     fOld = f;
-
+    
     % Compute the value of fun
     f = fun(x);
     
@@ -162,7 +172,7 @@ while abs(f/fOld-1) > relativeTol ...
     
     % Update Iteration Count
     nIter = nIter + 1;
-
+    
     if DEBUG > 0
         % Record values for debugging
         xHist(nIter+1) = x;
@@ -179,7 +189,7 @@ end
 if failCriteria(x) == true
     errStatus = 1;
 end
-    
+
 % Set outputs
 root = x;
 residual = abs(f);

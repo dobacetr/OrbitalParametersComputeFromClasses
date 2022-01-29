@@ -18,7 +18,22 @@ classdef SpecificEnergy
         function eps = ComputeFrom_a_mu(a, mu, e)
             % If the orbit type is known, a random e within its range can
             % be given as it is not used in the computation
-            eps = (-1).^(e<1) .* mu ./ ( 2*a );
+            if a < 0
+                % Semi-major axis is negative, then e > 1
+                assert( e > 1, 'Semi-major axis is negative while orbit is not hyperbolic.' );
+
+            elseif e > 1
+                % if a is actually abs(a), but the orbit is hyperbolic
+                a = -a;
+                
+            else
+                % Orbit is not hyperbolic, there should not be any
+                % confusion about semi-major axis
+                %
+                % Do nothing
+            end
+                
+            eps = -mu ./ (2*a);
         end
         
         % Given specific angular momentum(h), eccentricity(e),

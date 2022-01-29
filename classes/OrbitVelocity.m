@@ -31,6 +31,22 @@ classdef OrbitVelocity
             vEci = MVmult( Mmult(C_perifocal2eci , C_RTZ2perifocal), vRTZ);
         end
         
+        function vEci = ComputeFrom_h_e_Ome_inc_w_ta_mu(h, e, Ome, inc, w, ta, mu)
+            
+            sze = length(e);
+            szta = length(ta);
+            
+            assert( sze == szta || ( sze == 1 || szta == 1),'Incompatible eccentricity and true anomanly vector sizes.' );
+            
+            sz = max(sze, szta);
+            
+            vp = (mu./h) .* ([-sin(ta);(e + cos(ta));zeros(1, sz)]);
+            
+            Cip = permute(dcm_eci2perifocal(Ome, inc, w), [2,1,3]);
+            
+            vEci = MVmult(Cip, vp);
+        end
+        
         % Given specific energy(eps), radius(r), gravitational parameter(mu)
         function v = ComputeFrom_eps_r_mu(eps, r, mu)
             v = sqrt(2*( eps + mu ./ r ));

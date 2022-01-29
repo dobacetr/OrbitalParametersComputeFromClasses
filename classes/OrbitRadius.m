@@ -10,4 +10,16 @@ classdef OrbitRadius
             r = h.^2 ./ ( mu .* ( 1 + e .* cos(ta) ) );
         end
     end
+    
+    %% Hyperbolic Functions
+    methods (Static)
+        % Given semi-major radius(a), eccentricity(e), hyperbolic mean
+        % anomaly(F)
+        function r = ComputeFrom_a_e_F(a, e, F)
+            assert( all(e>1), 'This equation is valid for hyperbolic orbits only.' )
+            
+            r = a .* ( 1 - e .* cosh(F) );
+            
+        end
+    end
 end
