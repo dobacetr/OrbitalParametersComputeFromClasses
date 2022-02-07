@@ -6,14 +6,13 @@ classdef TrueAnomaly
     methods (Static)
         % Given specific angular momentum vector and eccentricity vector in Eci
         function ta = ComputeFrom_rVecEci_eVecEci(rVecEci, eVecEci)
-            % Eci z is defined as
-            zEci = [0;0;1];
             
             % Compute ta
-            ta = acos( dot(rVecEci,eVecEci) ./ (vec_mag(rVecEci) .* vec_mag(eVecEci)) );
+            ta = acos( vec_dotp(rVecEci,eVecEci) ./ (vec_mag(rVecEci) .* vec_mag(eVecEci)) );
             
             % Complete to 360deg(unwrap)
-            ta((rVecEci'*zEci) < 0) = 2*pi -  ta((rVecEci'*zEci) < 0);
+            cp = vec_crossp(eVecEci,rVecEci);
+            ta(cp(3, :) < 0) = 2*pi -  ta(cp(3, :) < 0);
         end
         
         % Given range(r), specific angular momentum(h), eccentricity(e),
@@ -70,7 +69,7 @@ classdef TrueAnomaly
             F = EccentricAnomaly.ComputeFrom_Mh_e(Mh, e);
             
             % Use the sign Mh to determine the sign of ta
-            ta = sign(Mh) .* 2 .* atan( tanh(F/2) .* sqrt( (e+1)./(e-1) ) );
+            ta = 2 .* atan( tanh(F/2) .* sqrt( (e+1)./(e-1) ) );
         end
     end
 end

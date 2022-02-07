@@ -21,8 +21,8 @@ classdef OrbitVelocity
                 cta;
                 sta;
                 zeros(1, sz);
-                sta;
-                -cta;
+                -sta;
+                cta;
                 zeros(3, sz);
                 ones(1, sz);
                 ], 3,3, sz);

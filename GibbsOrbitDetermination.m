@@ -1,4 +1,4 @@
-function [a, e, i, RAAN, w, TA, h, Eps, T] = GibbsOrbitDetermination(r1, r2, r3, mu)
+function [a, e, i, RAAN, w, TA, h, Eps, T, v2] = GibbsOrbitDetermination(r1, r2, r3, mu)
 % It should be noted at first 6 of these are enough to define the orbit
 % completely.
 

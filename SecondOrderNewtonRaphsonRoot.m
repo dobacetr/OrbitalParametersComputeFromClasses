@@ -142,7 +142,7 @@ while abs(f/fOld-1) > relativeTol ...
         hold on
         plot( x*ones(2,1), ylim, 'r--','DisplayName', 'StartPoint' )
         plot( (x+xStep)*ones(2,1), ylim, 'g--', 'DisplayName','Target Step'  );
-        legend Location best
+%         legend Location best
     end
     
     % Determine if x is lower or upper bound

@@ -50,7 +50,7 @@ classdef EccentricAnomaly
                 [E(iRes), residual, errStatus] = SecondOrderNewtonRaphsonRoot(fun, Einit);
 %                 [E(iRes), residual, errStatus] = NewtonRaphsonRoot(fun, Einit);
                 
-                if errStatus > 0 && abs(residual) > 1E-6
+                if errStatus > 0 && abs(residual) > 1E-3
                     error('Error occurred while searching for Eccentric Anomaly.');
                 end
             end
