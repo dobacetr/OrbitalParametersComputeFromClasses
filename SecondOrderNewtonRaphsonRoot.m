@@ -1,4 +1,4 @@
-function [root, residual, errStatus] = SecondOrderNewtonRaphsonRoot(fun, initGuess, relativeTol, scale, nMaxIter, failCriteria)
+function [root, residual, errStatus, nIter] = SecondOrderNewtonRaphsonRoot(fun, initGuess, relativeTol, scale, nMaxIter, failCriteria)
 %NewtonRaphsonRoot Find the root of a function given its derivative
 %function
 %   Inputs:
@@ -18,6 +18,7 @@ function [root, residual, errStatus] = SecondOrderNewtonRaphsonRoot(fun, initGue
 %       errStatus: 1 Failure Criteria is met
 %                  2 root went out of scope
 %                  3 Max Iter exceeded
+%       nIter   : Number of iterations taken for the solution
 
 % Enables debugging lines, 0 is for disabled.
 DEBUG = 0;
@@ -55,9 +56,9 @@ fOld = 2*f;
 del = fx^2 - 2 * f * fxx;
 
 % Compute step size required to reach 0
-if fxx ~= 0
+if abs(fxx) > 1E-8
     if del >= 0
-        xStep = -fx/fxx + sign( -f*fx*fxx) * sqrt(del)/fxx;
+        xStep = -fx/fxx - sign( -f*fx*fxx) * sqrt(del)/fxx;
     else
         xStep = -f/fx * ( 1 + 0.5*f/fx^2*fxx );
     end
@@ -77,6 +78,8 @@ elseif xStep < 0
     xMin = -Inf;
     xMax = x;
 else
+    xMin = -Inf;
+    xMax = Inf;
     %     error('Derivative is zero at this point. This is a local minimum.');
     % 2;
 end
@@ -148,7 +151,9 @@ while abs(f/fOld-1) > relativeTol ...
     % Determine if x is lower or upper bound
     if xStep > 0
         xMin = x;
+        xMax = Inf;
     elseif xStep < 0
+        xMin = -Inf;
         xMax = x;
     else
         %         error('Step is zero.') % as abs(f) > tol, f/fx^2*fxx == -2 must be true.
@@ -228,14 +233,19 @@ end
 function [f, fx, fxx] = Compute_f_fx_fxx(fun, x, dx)
 % takes up to nth derivative of the function
 
-% Center point
-f = fun(x);
+% % Center point
+% f = fun(x);
+% 
+% % Previous point
+% fm1 = fun(x-dx);
+% 
+% % Next Point
+% fp1 = fun(x+dx);
 
-% Previous point
-fm1 = fun(x-dx);
-
-% Next Point
-fp1 = fun(x+dx);
+fList = fun( [x-dx;x;x+dx] );
+fm1 = fList(1);
+f = fList(2);
+fp1 = fList(3);
 
 % Compute first derivative
 fx = (fp1 - fm1)/(2*dx);
