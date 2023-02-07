@@ -40,7 +40,7 @@ classdef TrueAnomaly
             E = EccentricAnomaly.ComputeFrom_Me_e(Me, e);
             
             % Compute True Anomaly
-            ta = ComputeFrom_E_e(E, e);
+            ta = TrueAnomaly.ComputeFrom_E_e(E, e);
         end
         
         % Given EccentricAnomaly(E), eccentricity

@@ -69,7 +69,7 @@ classdef Eccentricity
         % gravitational parameter(mu)
         function e = ComputeFrom_ra_h_mu(ra, h, mu)
             % at rp, we have ta = 180deg;
-            e = ComputeFrom_r_h_ta_mu(ra, h, pi, mu);
+            e = Eccentricity.ComputeFrom_r_h_ta_mu(ra, h, pi, mu);
         end
         
         % Given periapsis range(rp), semi-major axis(a)
