@@ -61,6 +61,7 @@ function C_eci2perifocal = dcm_eci2perifocal(OmeRad, incRad, argPeriRad)
 %     
 %     % Compute the final
 %     C_eci2perifocal = Mmult(Mmult(C3, C2) , C1);
+%     C_eci2perifocal = DCM_angle(3, ome) * DCM_angle(1, inc) * DCM_angle(3, Ome)
 
  
 C_eci2perifocal = reshape([...

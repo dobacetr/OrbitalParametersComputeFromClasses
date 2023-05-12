@@ -36,6 +36,12 @@ classdef TrueAnomaly
         
         % Given MeanAnomaly(Me), eccentricty(e)
         function ta = ComputeFrom_Me_e(Me, e)
+            if length(e) == 1
+                if e == 0
+                    ta = Me;
+                    return
+                end
+            end
             % Compute Eccentric Anomaly
             E = EccentricAnomaly.ComputeFrom_Me_e(Me, e);
             
@@ -45,6 +51,13 @@ classdef TrueAnomaly
         
         % Given EccentricAnomaly(E), eccentricity
         function ta = ComputeFrom_E_e(E, e)
+            if length(e) == 1
+                if e == 0
+                    ta = E;
+                    return
+                end
+            end
+            
             ta = 2*atan(tan(E/2) .* sqrt( (1+e)./(1-e) ));
         end
     end

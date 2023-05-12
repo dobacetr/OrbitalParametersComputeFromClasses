@@ -100,10 +100,11 @@ while abs(f/fOld-1) > relativeTol ...
         && nIter < nMaxIter ...
         && failCriteria(x) == false
     
-    % TODO if is evaluated at the end of previous iter, and start of this
+    % TODO f is evaluated at the end of previous iter, and start of this
     % iter. Can be optimized by inputting the value along with the function.
     % Compute the function and its 1st and 2nd derivatives
-    [f, fx, fxx] = Compute_f_fx_fxx(fun, x, dx);
+%     [f, fx, fxx] = Compute_f_fx_fxx(fun, x, dx);
+    [fx, fxx] = Compute_fx_fxx(fun, f, x, dx);
     
     % 2nd Order Zero Crossing condition
     del = fx^2 - 2 * f * fxx;
@@ -246,6 +247,29 @@ fList = fun( [x-dx;x;x+dx] );
 fm1 = fList(1);
 f = fList(2);
 fp1 = fList(3);
+
+% Compute first derivative
+fx = (fp1 - fm1)/(2*dx);
+
+% Compute second derivative
+fxx = (fp1+fm1-2*f)/dx^2;
+end
+
+function [fx, fxx] = Compute_fx_fxx(fun, f, x, dx)
+% takes up to nth derivative of the function
+
+% % Center point
+% f = fun(x);
+% 
+% % Previous point
+% fm1 = fun(x-dx);
+% 
+% % Next Point
+% fp1 = fun(x+dx);
+
+fList = fun( [x-dx;x+dx] );
+fm1 = fList(1);
+fp1 = fList(2);
 
 % Compute first derivative
 fx = (fp1 - fm1)/(2*dx);

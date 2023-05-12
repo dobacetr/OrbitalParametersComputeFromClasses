@@ -3,20 +3,21 @@ function Cis = dcm_rsp2intertial(Ome, inc, w, ta)
             Cip = permute(dcm_eci2perifocal(Ome, inc, w), [2,1,3]);
             
             % Compute DCM rsp(radial, tangential , perpendicular) to perifocal
-            cta = cos(ta);
-            sta = sin(ta);
-            szta = length(ta);
-            Cpr = reshape(...
-                [...
-                cta;
-                sta;
-                zeros(1, szta);
-                -sta;
-                cta;
-                zeros(3, szta);
-                ones(1, szta);
-                ], ...
-                [3, 3, szta]);
+%             cta = cos(ta);
+%             sta = sin(ta);
+%             szta = length(ta);
+%             Cpr = reshape(...
+%                 [...
+%                 cta;
+%                 sta;
+%                 zeros(1, szta);
+%                 -sta;
+%                 cta;
+%                 zeros(3, szta);
+%                 ones(1, szta);
+%                 ], ...
+%                 [3, 3, szta]);
+            Cpr = DCM_angle(3, -ta);
             
             % Compute DCM rsp to inertial
             Cis = Mmult( Cip, Cpr );
